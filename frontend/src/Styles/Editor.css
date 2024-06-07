@@ -1,0 +1,201 @@
+.editor {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    box-sizing: border-box;
+    color: black;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    border: 1px solid #ddd;
+    overflow: hidden;
+}
+
+.editor-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 50px;
+    border-radius: 10px 10px 0 0;
+    box-sizing: border-box;
+    background-color: #FAFAFA;
+    padding: 0 10px;
+}
+
+.editor-header p {
+    margin: 0;
+    font-weight: bold;
+    font-size: 18px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.toggle-buttons {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.toggle-button {
+    padding: 5px 10px;
+    border: none;
+    border-right: 1px solid #ddd;
+    cursor: pointer;
+    background-color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.toggle-button:last-child {
+    border-right: none;
+}
+
+.toggle-button:hover {
+    background-color: #fbfbfb;
+}
+
+.toggle-button.active {
+    background-color: #E0E0E0;
+}
+
+.editor-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    overflow: hidden;
+}
+
+.nlq-editor-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 30%;
+    margin-bottom: 5px;
+    box-sizing: border-box;
+}
+
+textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    overflow-y: auto;
+}
+
+textarea:focus {
+    outline: none;
+}
+
+textarea::-webkit-scrollbar {
+    width: 8px;
+}
+
+textarea::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background: #afafaf;
+    border-radius: 10px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+.sql-editor-container {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 2px 0;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+    flex: 1;
+}
+
+.generate-button, .execute-button {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding: 5px 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.execute-button {
+    right: 45px;
+}
+
+.generate-button:disabled, .execute-button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+.options-button {
+    position: absolute;
+    display: flex;
+    right: 10px;
+    bottom: 10px;
+    height: fit-content;
+    padding: 3px 3px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.generate-button:hover, .execute-button:hover, .options-button:hover {
+    background-color: #0059c8;
+}
+
+.options {
+    position: absolute;
+    right: 10px;
+    bottom: 50px;
+    padding: 5px;
+    width: 100px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 5px 0;
+    border-radius: 7px;
+    border-bottom: 1px solid #F0F0F0;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.option:last-child {
+    border: none;
+}
+
+.option:hover {
+    background-color: #F0F0F0;
+}
