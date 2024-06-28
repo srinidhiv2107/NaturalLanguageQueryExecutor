@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useSidebarContext } from '../Context/SidebarContextProvider';
 import { useDB, useUpdateDB } from '../Context/DatabaseContextProvider';
 import { useResponsesContext } from '../Context/ResponsesContextProvider';
+import { useHistoryContext } from '../Context/HistoryContextProvider';
 import { useResultContext } from '../Context/ResultContextProvider';
 import axios from 'axios';
+import { Toaster } from "react-hot-toast";
+import { showToast } from "./Toast";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from "remark-gfm";
 import '../Styles/Sidebar.css';
@@ -11,17 +14,23 @@ import '../Styles/Sidebar.css';
 const Sidebar = () => {
   const [databases, setDatabases] = useState([]);
   const [showDB, setShowDB] = useState([]);
+  const [showHistory, setShowHistory] = useState([]);
   const {
     isCollapsed, setIsCollapsed, selectedOption, setSelectedOption
   } = useSidebarContext();
   const DB = useDB();
   const updateDB = useUpdateDB();
-  const { responses } = useResponsesContext();
+  const { responses, updateResponsesForWait, finalUpdateWithInfo } = useResponsesContext();
+  const { history } = useHistoryContext();
   const { updateResultsSuccess } = useResultContext();
 
   useEffect(() => {
     setShowDB(new Array(databases.length).fill(false));
   }, [databases]);
+
+  useEffect(() => {
+    setShowHistory(new Array(history.length).fill(false));
+  }, [history]);
 
   useEffect(() => {
     console.log(responses)
@@ -61,11 +70,34 @@ const Sidebar = () => {
       });
   };
 
+  const handleHistoryClick = (index) => {
+    setShowHistory(prevState => {
+      return prevState.map((val, i) => (i === index)? !val: val);
+    });
+  }
+
+  const handleNormalizationCheck = async (dbName) => {
+    setSelectedOption("Interactions");
+    updateResponsesForWait("db-analysis");
+    try {
+      const response = await axios.post("http://localhost:3001/check-normalization", {
+        dbName
+      });
+      finalUpdateWithInfo(response.data.message.normalizationAnalysis);
+      showToast("Database analysis successful!", "check_circle");
+    }
+    catch(error) {
+      console.error('Error checking normalization: ', error);
+      showToast("Error checking normalization", "error");
+    }
+  };
+
   return (
     <div
       className={`sidebar ${isCollapsed ? 'collapsed' : 'expanded'}`}
       style={{width: `${(!isCollapsed)? (selectedOption === "Databases"? "25%": "30%"): "3.5%"}`}}
     >
+      <Toaster />
       {isCollapsed ? (
         <>
           <div className="sidebar-option" onClick={() => handleOptionClick('Databases')}>
@@ -90,12 +122,20 @@ const Sidebar = () => {
                 <div key={index} className="database-card">
                   <div className="database-card-header" onDoubleClick={() => updateDB(db.dbName)}>
                     <div className={`title ${(db.dbName === DB)? "active": ""}`}>{db.dbName}</div>
-                    <div className="icon" onClick={(e) => {
-                      e.stopPropagation();
-                      handleDatabaseClick(index);
-                    }}>
-                      <i className="material-icons">
-                        {!(showDB[index])? "keyboard_arrow_down": "keyboard_arrow_up"}
+                    <div className="icons">
+                      <i className="material-symbols-rounded"
+                         title={`check whether ${db.dbName} is normalised`}
+                         onClick={(e) => {
+                           e.stopPropagation();
+                           handleNormalizationCheck(db.dbName);
+                         }}>
+                        database
+                      </i>
+                      <i className="material-icons" onClick={(e) => {
+                        e.stopPropagation();
+                        handleDatabaseClick(index);
+                      }}>
+                        {!(showDB[index]) ? "keyboard_arrow_down" : "keyboard_arrow_up"}
                       </i>
                     </div>
                   </div>
@@ -120,6 +160,25 @@ const Sidebar = () => {
                 </div>
               ))
               }
+            </div>
+          )}
+          {selectedOption === "History" && (
+            <div className="sidebar-body">
+              {history.length > 0 && history.map((component, index) => (
+                <div key={index} className="history">
+                  <div className="nlq-section">
+                    <div className="nlq">{component.NLQ}</div>
+                    <div className="icon" onClick={() => handleHistoryClick(index)}>
+                      <i className="material-icons">
+                        {(!showHistory[index])? "keyboard_arrow_down": "keyboard_arrow_up"}
+                      </i>
+                    </div>
+                  </div>
+                  {(showHistory[index] && (
+                    <div className="sql-section">{component.SQL}</div>
+                  ))}
+                </div>
+              ))}
             </div>
           )}
         </div>

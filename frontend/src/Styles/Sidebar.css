@@ -122,14 +122,15 @@
     font-weight: bold;
 }
 
-.database-card-header .icon {
+.database-card-header .icons {
     display: flex;
     align-items: center;
     justify-content: right;
+    gap: 10px;
     width: 50%;
 }
 
-.database-card-header .icon i {
+.database-card-header .icons i {
     border-radius: 4px;
     cursor: pointer;
     font-size: 20px;
@@ -140,7 +141,7 @@
     transition: background-color 0.2s ease-in-out;
 }
 
-.database-card-header .icon i:hover {
+.database-card-header .icons i:hover {
     background-color: #F0F0F0;
 }
 
@@ -202,4 +203,59 @@
 .response ol, .response ul {
     margin: 0;
     padding-left: 20px;
+}
+
+.history {
+    max-width: 100%;
+    height: fit-content;
+    padding: 0;
+    margin-bottom: 10px;
+    border: 1px solid #E0E0E0;
+    border-radius: 10px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 14px;
+    font-family: "Poppins", sans-serif;
+    overflow: hidden;
+}
+
+.nlq-section {
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 5px 10px;
+    background-color: #FAFAFA;
+}
+
+.nlq-section .nlq {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    width: 90%;
+    margin: 0;
+}
+
+.nlq-section .icon {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    width: 10%;
+}
+
+.nlq-section .icon i {
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: lighter;
+    text-align: end;
+    color: rgb(0, 0, 0, 0.5);
+    background-color: transparent;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.nlq-section .icon i:hover {
+    background-color: #F0F0F0;
+}
+
+.sql-section {
+    padding: 5px 5px 5px 10px;
 }

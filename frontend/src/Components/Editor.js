@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSidebarContext } from "../Context/SidebarContextProvider";
 import { useDB, useUpdateDB } from "../Context/DatabaseContextProvider";
 import { useResponsesContext } from "../Context/ResponsesContextProvider";
+import { useHistoryContext } from "../Context/HistoryContextProvider";
 import { useResultContext } from "../Context/ResultContextProvider";
 import axios from "axios";
 import { Toaster } from "react-hot-toast";
@@ -20,6 +21,7 @@ const MyEditor = () => {
   const DB = useDB();
   const updateDB = useUpdateDB();
   const { updateResponsesForWait, finalUpdateWithInfo } = useResponsesContext();
+  const { history, updateHistory } = useHistoryContext();
   const { updateResultsSuccess, updateResultsError } = useResultContext();
   const optionsBtnRef = useRef(null);
 
@@ -34,6 +36,10 @@ const MyEditor = () => {
 
     return () => document.removeEventListener("click", handleOutsideClick);
   }, []);
+
+  useEffect(() => {
+    console.log("History: ", history);
+  }, [history]);
 
   const handleModeClick = (mode) => setSelectedMode(mode);
   const handleNLQEditorChange = (e) => setNLQQuery(e.target.value);
@@ -91,6 +97,7 @@ const MyEditor = () => {
         nlq: NLQQuery
       });
       setSQLQuery(response.data.message.sqlQuery);
+      updateHistory(NLQQuery, response.data.message.sqlQuery);
       showToast("Query generated successfully!", "check_circle");
     }
     catch(error) {

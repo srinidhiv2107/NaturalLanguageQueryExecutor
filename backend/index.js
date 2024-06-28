@@ -70,6 +70,53 @@ app.get('/table-data', (req, res) => {
   });
 });
 
+const getDatabaseSchema = async (dbName) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "SELECT table_name, column_name, data_type FROM information_schema.columns WHERE table_schema = ?",
+      [dbName],
+      (error, results) => {
+        if(error) return reject(error);
+        resolve(results);
+      }
+    );
+  });
+};
+
+app.post("/check-normalization", async (req, res) => {
+  const { dbName } = req.body;
+
+  let schema;
+  try {
+    schema = await getDatabaseSchema(dbName);
+  }
+  catch(error) {
+    return res.status(500).json({ error: "Failed to fetch database schema" });
+  }
+
+  const schemaInfo = schema.map((row) => ({
+    table: row.TABLE_NAME,
+    column: row.COLUMN_NAME,
+    type: row.DATA_TYPE,
+  }));
+
+  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+  const chat = model.startChat({ history: [] });
+
+  const result = await chat.sendMessage(`
+    You are an expert in database normalization. 
+    Analyze the following database schema and determine if it adheres to 1NF, 2NF, and 3NF.
+    If the database is not normalized, provide specific suggestions on what can be done to normalize it.
+    Schema: ${JSON.stringify(schemaInfo)}
+  `);
+
+  const response = await result.response;
+  const normalizationAnalysis = response.text();
+
+  res.json({ message: { normalizationAnalysis } });
+});
+
 const findCurrentDB = () => {
   return new Promise((resolve, reject) => {
     db.query("SELECT DATABASE() as currentDB;", (error, results) => {
@@ -105,19 +152,6 @@ app.post('/execute-sql', async (req, res) => {
     });
   });
 });
-
-const getDatabaseSchema = async (dbName) => {
-  return new Promise((resolve, reject) => {
-    db.query(
-      "SELECT table_name, column_name, data_type FROM information_schema.columns WHERE table_schema = ?",
-      [dbName],
-      (error, results) => {
-        if(error) return reject(error);
-        resolve(results);
-      }
-    );
-  });
-};
 
 const preprocessSqlQuery = (sqlQuery) => {
   sqlQuery = sqlQuery.replace(/```/g, '');

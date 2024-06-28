@@ -15,6 +15,6 @@
     padding: 0;
     font-family: "Poppins", sans-serif;
     color: transparent;
-    background: linear-gradient(135deg, #03045e, #0077b6, #00b4d8);
+    background: linear-gradient(135deg, #03045e, #0077b6, #00b4d8, #0077b6, #03045e);
     -webkit-background-clip: text;
 }
